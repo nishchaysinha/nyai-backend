@@ -42,7 +42,7 @@ def short_desc_prompt(event_report_text):
         
         {event_report}
 
-        Based on this data, generate a short title for the event.
+        Based on this data, generate a short description for the event.
         """
     )
 

@@ -1,4 +1,5 @@
 event_default = {
+    "case_id":"",
     "sender":"",
     "receiver":"",
     "event_report":"",
