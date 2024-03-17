@@ -119,6 +119,7 @@ venv/
 ENV/
 env.bak/
 venv.bak/
+monkey-nyai
 
 # Spyder project settings
 .spyderproject
