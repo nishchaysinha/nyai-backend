@@ -46,8 +46,8 @@ def create_case():
         final_json['event_report'] = request.json['event_report']
         final_json['event_proof'] = request.json['event_proof']
 
-        final_json['title'] = generate_title(chat, final_json['event_report'])
-        final_json['short_desc'] = generate_short_desc(chat, final_json['event_report'])
+        final_json['title'] = generate_title(final_json['event_report'])
+        final_json['short_desc'] = generate_short_desc(final_json['event_report'])
 
         # Store data in MongoDB
         client.db.events.insert_one(final_json)

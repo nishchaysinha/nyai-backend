@@ -1,5 +1,4 @@
 import google.generativeai as genai
-from google.generativeai import generative_models
 
 class GenerativeModel:
     def __init__(self, model_name, api_key=None):
