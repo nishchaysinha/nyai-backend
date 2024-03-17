@@ -6,6 +6,8 @@ import core.prompt_template as prompt_template
 import utils.filter_json as filter_json
 import utils.id_generator as id_generator
 import random
+from flask_cors import CORS
+
 
 from structures.event_object import *
 from core.descriptor import *
@@ -25,6 +27,8 @@ except Exception as e:
     print(e)
 
 app = Flask(__name__)
+cors = CORS(app)
+
 GM = llm.GenerativeModel("gemini-pro", os.getenv("GOOGLE_API_KEY"))
 chat = GM.chat_object()
 
