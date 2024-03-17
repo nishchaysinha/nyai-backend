@@ -6,9 +6,8 @@ import core.prompt_template as prompt_template
 import utils.filter_json as filter_json
 import utils.id_generator as id_generator
 import random
+
 from flask_cors import CORS
-
-
 from structures.event_object import *
 from core.descriptor import *
 
@@ -40,7 +39,8 @@ def ping():
 def create_case():
     try:
         final_json = event_default
-        final_json["case_id"] = id_generator.generate_case_id()
+        final_json["_id"] = id_generator.generate_case_id()  # Generate a new _id for each document
+        final_json['case_id'] = final_json["_id"]
         final_json['sender'] = request.json['sender']
         final_json['receiver'] = request.json['receiver']
         final_json['event_report'] = request.json['event_report']
@@ -49,9 +49,8 @@ def create_case():
         final_json['title'] = generate_title(chat, final_json['event_report'])
         final_json['short_desc'] = generate_short_desc(chat, final_json['event_report'])
 
-        #store data in mongodb
+        # Store data in MongoDB
         client.db.events.insert_one(final_json)
-
         return jsonify({"case_id": final_json["case_id"]})
     except Exception as e:
         return jsonify({"error": str(e)})
