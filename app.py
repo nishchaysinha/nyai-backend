@@ -6,6 +6,7 @@ import core.prompt_template as prompt_template
 import utils.filter_json as filter_json
 import utils.id_generator as id_generator
 import random
+import json
 
 from flask_cors import CORS
 from structures.event_object import *
@@ -13,6 +14,8 @@ from core.descriptor import *
 
 from pymongo.mongo_client import MongoClient
 from pymongo.server_api import ServerApi
+
+from core.judgement import judgement
 
 load_dotenv()
 
@@ -57,13 +60,34 @@ def create_case():
 
 
 @app.route('/reply_to_case', methods=['POST'])
-def generate():
+def reply_to_case():
     try:
-        response_text = request.json['response_text']
-        response_prompt = prompt_template.generate_prompt(str(response_text))
-        response = chat.send_message(response_prompt)
-        response_text = filter_json.filter_json(response.text)
-        return jsonify(response_text)
+        case_id = request.json['case_id']
+        # Get the case from the database
+        case = client.db.events.find_one({"case_id": case_id})
+        if case is None:
+            return jsonify({"error": "Case not found."})
+        if case['approval'] != "pending":
+            return jsonify({"error": "Case already approved or rejected."})
+        # Update the case with the receiver's report and proof
+        case['receiver_report'] = request.json['receiver_report']
+        case['receiver_proof'] = request.json['receiver_proof']
+        # run judgement check
+        judge = judgement(case)
+        judge = filter_json.filter_json(judge)
+        judge = json.loads(judge)
+        case['judgement'] = judge['judgement']
+        case['reasoning'] = judge['reasoning']
+        case['confidence'] = judge['confidence']
+        if float(case["confidence"]) < 0.75:
+            case['approval'] = "False"
+        else:
+            case['approval'] = "True"
+        # Store the updated case in the database
+        client.db.events.update_one({"case_id": case_id}, {"$set": case})
+        return jsonify(case)
+
+        return jsonify(case)
     except Exception as e:
         return jsonify({"error": str(e)})
 

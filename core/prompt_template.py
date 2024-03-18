@@ -9,9 +9,10 @@ def init_prompt(event_data_json):
 
         Based on this data, you have to provide a valid judgement about the event along with the reasons for your judgement. and a confidence score for your judgement.
 
-        return a json object with the following keys:
-        - judgement: True or False(True if victim is right, False if accused is right)
-        - reasons: a string representing the reasons for your judgement
+        return a raw json object with the following keys:
+        - judgement: True or False in string format(True if victim is right, False if accused is right)
+        - reasoning: a string representing the reasons for your judgement
+        - confidence: a float in string format representing your confidence in your judgement
         """
     )
 
