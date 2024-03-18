@@ -13,8 +13,11 @@ python3 -m venv venv
 # Activate virtual environment
 source venv/bin/activate
 
+
 # Install requirements
+apt install tesseract-ocr libtesseract-dev -y
 pip install -r requirements.txt
+
 
 # Run the app with gunicorn
 gunicorn app:app --bind "0.0.0.0"
