@@ -15,7 +15,7 @@ source venv/bin/activate
 
 
 # Install requirements
-sudo apt update
+apt update
 sudo apt install tesseract-ocr libtesseract-dev -y
 pip install -r requirements.txt
 

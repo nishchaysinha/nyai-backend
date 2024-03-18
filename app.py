@@ -8,7 +8,7 @@ import utils.id_generator as id_generator
 import random
 import json
 from ocr_utils.img_convert import base64_to_image
-from ocr_utils.ocr import ocr
+from ocr_utils.ocr import ocr, ocr_api
 
 
 from flask_cors import CORS
@@ -54,9 +54,10 @@ def create_case():
         final_json['event_proof_ocr'] = []
         for i in range(len(final_json['event_proof'])):
             
-            image = base64_to_image(final_json['event_proof'][i])
+            #image = base64_to_image(final_json['event_proof'][i])
+            #final_json['event_proof_ocr'].append(ocr(image))
 
-            final_json['event_proof_ocr'].append(ocr(image))
+            final_json['event_proof_ocr'].append(ocr_api(final_json['event_proof'][i]))
             
 
         final_json['title'] = generate_title(final_json['event_report'])
@@ -82,8 +83,18 @@ def reply_to_case():
         # Update the case with the receiver's report and proof
         case['receiver_report'] = request.json['receiver_report']
         case['receiver_proof'] = request.json['receiver_proof']
+        case['receiver_proof_ocr'] = []
+        for i in range(len(case['receiver_proof'])):
+            #image = base64_to_image(case['receiver_proof'][i])
+            #case['receiver_proof_ocr'].append(ocr(image))
+            case['receiver_proof_ocr'].append(ocr_api(case['receiver_proof'][i]))
+        
+        caseCopy = case
+        caseCopy["receiver_proof"] = [],
+        caseCopy["event_proof"] = [],
+
         # run judgement check
-        judge = judgement(case)
+        judge = judgement(caseCopy)
         judge = filter_json.filter_json(judge)
         judge = json.loads(judge)
         case['judgement'] = judge['judgement']
