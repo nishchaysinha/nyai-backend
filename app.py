@@ -19,8 +19,10 @@ from pymongo.mongo_client import MongoClient
 from pymongo.server_api import ServerApi
 
 from core.judgement import judgement
+from gmail_perc.mail import send_email
 
 load_dotenv()
+
 
 # Create a new client and connect to the server
 client = MongoClient(os.getenv("MONGO_URI"), server_api=ServerApi('1'))
@@ -65,7 +67,11 @@ def create_case():
 
         # Store data in MongoDB
         client.db.events.insert_one(final_json)
-        return jsonify({"case_id": final_json["case_id"]})
+        # Send an email to the receiver
+        print("Sending email to receiver...")
+        send_email(final_json['receiver'],final_json['case_id'])
+        print("Case created and email sent.")
+        return jsonify({"mail_status": "sent"})
     except Exception as e:
         return jsonify({"error": str(e)})
 
@@ -123,8 +129,16 @@ def get_cases():
     except Exception as e:
         return jsonify({"error": str(e)})
 
-
-
+@app.route('/case/<case_id>', methods=['GET'])
+def get_case_response(case_id):
+    try:
+        case = client.db.events.find_one({"case_id": case_id})
+        if case is None:
+            return jsonify({"error": "Case not found."})
+        case.pop('_id')
+        return jsonify(case)
+    except Exception as e:
+        return jsonify({"error": str(e)})
 
 if __name__ == "__main__":
     app.run(debug=True)
