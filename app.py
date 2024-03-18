@@ -7,6 +7,9 @@ import utils.filter_json as filter_json
 import utils.id_generator as id_generator
 import random
 import json
+from ocr_utils.img_convert import base64_to_image
+from ocr_utils.ocr import ocr
+
 
 from flask_cors import CORS
 from structures.event_object import *
@@ -48,6 +51,13 @@ def create_case():
         final_json['receiver'] = request.json['receiver']
         final_json['event_report'] = request.json['event_report']
         final_json['event_proof'] = request.json['event_proof']
+        final_json['event_proof_ocr'] = []
+        for i in range(len(final_json['event_proof'])):
+            
+            image = base64_to_image(final_json['event_proof'][i])
+
+            final_json['event_proof_ocr'].append(ocr(image))
+            
 
         final_json['title'] = generate_title(final_json['event_report'])
         final_json['short_desc'] = generate_short_desc(final_json['event_report'])
