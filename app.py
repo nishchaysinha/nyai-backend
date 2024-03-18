@@ -110,6 +110,19 @@ def reply_to_case():
 
     except Exception as e:
         return jsonify({"error": str(e)})
+    
+
+# Get all cases
+@app.route('/get_cases', methods=['GET'])
+def get_cases():
+    try:
+        cases = list(client.db.events.find({}))
+        for case in cases:
+            case.pop('_id')
+        return jsonify(cases)
+    except Exception as e:
+        return jsonify({"error": str(e)})
+
 
 
 
