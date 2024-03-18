@@ -89,7 +89,7 @@ def reply_to_case():
             #case['receiver_proof_ocr'].append(ocr(image))
             case['receiver_proof_ocr'].append(ocr_api(case['receiver_proof'][i]))
         
-        caseCopy = case
+        caseCopy = case.copy()
         caseCopy["receiver_proof"] = [],
         caseCopy["event_proof"] = [],
 
@@ -108,7 +108,6 @@ def reply_to_case():
         client.db.events.update_one({"case_id": case_id}, {"$set": case})
         return jsonify(case)
 
-        return jsonify(case)
     except Exception as e:
         return jsonify({"error": str(e)})
 
