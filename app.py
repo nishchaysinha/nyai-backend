@@ -14,6 +14,7 @@ from ocr_utils.ocr import ocr, ocr_api
 from flask_cors import CORS
 from structures.event_object import *
 from core.descriptor import *
+from core.policytrainer import *
 
 from pymongo.mongo_client import MongoClient
 from pymongo.server_api import ServerApi
@@ -87,7 +88,7 @@ def reply_to_case():
         if case['approval'] != "pending":
             return jsonify({"error": "Case already approved or rejected."})
         # Update the case with the receiver's report and proof
-        case['receiver_report'] = request.json['receiver_report']
+        case['receiver_report'] = request.json['receiver_report'] # + str(search_similar_documents(db, request.json['receiver_report'])
         case['receiver_proof'] = request.json['receiver_proof']
         case['receiver_proof_ocr'] = []
         for i in range(len(case['receiver_proof'])):
@@ -139,6 +140,15 @@ def get_case_response(case_id):
         return jsonify(case)
     except Exception as e:
         return jsonify({"error": str(e)})
+
+@app.route('/train_policy', methods=['POST'])
+def train_policy():
+    try:
+        db = generate_vectordb()
+        return jsonify({"status": "success"})
+    except Exception as e:
+        return jsonify({"error": str(e)})
+
 
 if __name__ == "__main__":
     app.run(debug=True)
