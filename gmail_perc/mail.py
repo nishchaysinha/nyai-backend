@@ -8,7 +8,7 @@ EMAIL_PASSWORD = "ocst elrz yvma sjkd"
 
 def send_email(recipient, case_id):
     subject = "Alert! you have a complaint on Ny.ai"
-    body = "Checkout the complaint and respond at: " + "localhost:3000/cases/" + case_id
+    body = "Checkout the complaint and respond at: " + "https://nyai-app.vercel.app/cases/" + case_id
     msg = MIMEText(body)
     msg['Subject'] = subject
     msg['From'] = EMAIL_USERNAME
