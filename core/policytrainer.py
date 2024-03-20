@@ -5,7 +5,7 @@ from langchain.text_splitter import RecursiveCharacterTextSplitter
 import os
 
 # I know this is not the best way to handle this, I am doing this because of a time crunch.
-
+# change the vectordb to pinecone later
 def generate_vectordb():
     hf_embedding = HuggingFaceInstructEmbeddings()
 
