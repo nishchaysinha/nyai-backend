@@ -4,7 +4,8 @@ import os
 
 def ocr(image):
     # Open the image file
-    image = image
+    with open(image, "rb") as f:
+        image = f.read()
 
     # Perform OCR using Tesseract
     text = pytesseract.image_to_string(image)
@@ -15,16 +16,17 @@ def ocr(image):
 def ocr_api(image_base64):
     url = "https://api.ocr.space/parse/image"
     headers = {
-    "apikey": "helloworld"
+        "apikey": "helloworld",
     }
     data = {
         "base64Image": image_base64,
         "language": "eng",
         "isOverlayRequired": "false"
     }
+
     response = requests.post(url, headers=headers, data=data)
 
-    # The response will be in JSON format, so you can convert it to a Python dictionary using .json()
+    # The response will be in JSON format, so you can convert it to a Python
     response_dict = response.json()
-    return response_dict['ParsedResults'][0]['ParsedText']
 
+    return response_dict['ParsedResults'][0]['ParsedText']
